@@ -73,25 +73,25 @@
         // CONFIGURAZIONE DATI
 const categories = [
     {
-        title: "DISCO DANCE 70/80",
+        title: "ANNI 70/80",
         bg: "immagini/disco.png", // Sfondo del riquadro
         songs: [
-            { id: 1, audio: "link_audio_1.mp3", artist: "Michael Jackson", img: "https://via.placeholder.com/60/000000/ffffff?text=MJ" },
-            { id: 2, audio: "audio2.mp3", artist: "Madonna", img: "img_madonna.jpg" },
-            { id: 3, audio: "audio3.mp3", artist: "Queen", img: "img_queen.jpg" },
-            { id: 4, audio: "audio4.mp3", artist: "Adele", img: "img_adele.jpg" },
-            { id: 5, audio: "audio5.mp3", artist: "Ed Sheeran", img: "img_ed.jpg" },
+            { id: 1, audio: "audio/Ottanta1.mp3", artist: "Bertoli & Mannoia - Pescatore", img: "immagini/pescatore.jpg" },
+            { id: 2, audio: "audio/Ottanta2.mp3", artist: "Lucio Battisti - Il mio Canto Libero ", img: "immagini/canto.jpg" },
+            { id: 3, audio: "audio/Ottanta3.mp3", artist: "Bee Gees - Stayin'Alive ", img: "immagini/alive.PNG" },
+            { id: 4, audio: "audio/Ottanta4.mp3", artist: "ABBA - MAMMA MIA ", img: "immagini/abba.jpg" },
+            { id: 5, audio: "audio/Ottanta5.mp3", artist: "Massimo Ranieri - Vent'Anni", img: "immagini/ranieri.jpg" },
         ]
     },
     {
         title: "ANNI 90",
         bg: "immagini/anni90.png",
         songs: [
-            { id: 1, audio: "rock1.mp3", artist: "AC/DC", img: "img_acdc.jpg" },
-            { id: 2, audio: "rock2.mp3", artist: "Led Zeppelin", img: "img_led.jpg" },
-            { id: 3, audio: "rock3.mp3", artist: "Pink Floyd", img: "img_pink.jpg" },
-            { id: 4, audio: "rock4.mp3", artist: "Deep Purple", img: "img_deep.jpg" },
-            { id: 5, audio: "rock5.mp3", artist: "Nirvana", img: "img_nirvana.jpg" },
+            { id: 1, audio: "audio/Novanta1.mp3", artist: "Eiffel65 - Blue ", img: "immagini/blu.jpg" },
+            { id: 2, audio: "audio/Novanta2.mp3", artist: "Spice Girl - Wannabe ", img: "immagini/spice.jpg" },
+            { id: 3, audio: "audio/Novanta3.mp3", artist: "Blink 182 - All the Small Thing ", img: "immagini/blink.jpg" },
+            { id: 4, audio: "audio/Novanta4.mp3", artist: "Samuele Bersani - Giudizi Universali ", img: "immagini/samuele.jpg" },
+            { id: 5, audio: "audio/Novanta5.mp3", artist: "883 - Gli Anni ", img: "immagini/883.jpg" },
         ]
     },
 {
@@ -121,11 +121,11 @@ const categories = [
         title: "ANNI 2020",
         bg: "immagini/anni2020.png",
         songs: [
-            { id: 1, audio: "rock1.mp3", artist: "AC/DC", img: "img_acdc.jpg" },
-            { id: 2, audio: "rock2.mp3", artist: "Led Zeppelin", img: "img_led.jpg" },
-            { id: 3, audio: "rock3.mp3", artist: "Pink Floyd", img: "img_pink.jpg" },
-            { id: 4, audio: "rock4.mp3", artist: "Deep Purple", img: "img_deep.jpg" },
-            { id: 5, audio: "rock5.mp3", artist: "Nirvana", img: "img_nirvana.jpg" },
+            { id: 1, audio: "audio/Nuova1.mp3", artist: "Taylor Swift - The Fate of Ophelia", img: "immagini/taylor.png" },
+            { id: 2, audio: "audio/Nuova2.mp3", artist: "Harry Styles - As it Was", img: "immagini/harry.jpg" },
+            { id: 3, audio: "audio/Nuova3.mp3", artist: "Alfa - Il Filo Rosso", img: "immagini/alfa.jpg" },
+            { id: 4, audio: "audio/Nuova4.mp3", artist: "Dualipa - Levitating", img: "immagini/dua.jpg" },
+            { id: 5, audio: "audio/Nuova5.mp3", artist: "Annalisa - Esibizionista", img: "immagini/lisa.jpg" },
         ]
     },
     // Aggiungi qui altre categorie seguendo lo schema...
@@ -147,7 +147,7 @@ categories.forEach(cat => {
     block.style.backgroundImage = `url('${cat.bg}')`;
 
     // AGGIUNTA: Se il titolo è DISCO DANCE, aggiungi la classe speciale
-    if (cat.title === "DISCO DANCE 70/80") {
+    if (cat.title === "ANNI 70/80") {
         block.classList.add('special-disco');
     }
     if (cat.title === "ANNI 2000") {
