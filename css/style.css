@@ -1,10 +1,29 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #121212;
     color: white;
     margin: 0;
     padding: 20px;
+    /* BORDEAUX PIÙ INTENSO E "REALE" */
+    background-color: #5c0000; 
+
+    /* TEXTURE PELLE VERA (Niente buchi, solo rugosità) */
+    background-image: 
+        /* 1. Luce radiale per simulare la bombatura della copertina */
+        radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%),
+        /* 2. Texture 'leather' (pelle) naturale */
+        url("https://www.transparenttextures.com/patterns/leather.png");
+
+    /* Spessore della grana */
+    background-size: auto, 400px 400px; 
+    background-attachment: fixed;
+
+    /* Questo comando fonde il colore bordeaux con la texture pelle */
+    background-blend-mode: multiply;
+
+    /* OMBRA INTERNA: fondamentale per l'effetto copertina rigida */
+    box-shadow: inset 0 0 150px rgba(0,0,0,0.8);
+    
 }
 
 .grid-container {
@@ -47,8 +66,24 @@ body {
 }
 
 .category-block:nth-child(even) {
-    transform: translateY(100px); /* Regola i pixel per decidere quanto deve scendere */
+    transform: translateY(100px);
 }
+
+/* Regola Hover per i blocchi DISPARI (1, 3, 5) */
+.category-block:nth-child(odd):hover {
+    transform: scale(1.02);
+    border-color: #00d4ff;
+    z-index: 10; /* Lo porta in primo piano mentre lo ingrandisci */
+}
+
+/* Regola Hover per i blocchi PARI (2, 4) - QUESTA È QUELLA CHE TI MANCA */
+.category-block:nth-child(even):hover {
+    /* Mantiene i 100px in basso E aggiunge lo scale */
+    transform: translateY(100px) scale(1.02);
+    border-color: #00d4ff;
+    z-index: 10;
+}
+
 
 .slots-container {
     display: flex;
