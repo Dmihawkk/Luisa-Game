@@ -1,0 +1,517 @@
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: white;
+    margin: 0;
+    padding: 20px;
+}
+
+.grid-container {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 150px !important;
+    
+    /* AGGIUNGI QUESTO PER CREARE SPAZIO VERTICALE DALLA CLASSIFICA */
+    margin-top: 100px !important; 
+    
+    width: 100vw !important;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw !important;
+    margin-right: -50vw !important;
+    padding: 0 60px !important;
+    box-sizing: border-box !important;
+}
+
+.category-block {
+    width: 100%; /* Occupa tutto lo spazio della sua colonna */
+    min-height: 600px;/* Aumentato per dare più respiro */
+    padding: 50px 20px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    /* Spinge i numeri in alto e il titolo in basso */
+    justify-content: space-between; 
+    align-items: center;
+    box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+.category-block:hover {
+    transform: scale(1.02);
+    border-color: #00d4ff;
+}
+
+.category-block:nth-child(even) {
+    transform: translateY(100px); /* Regola i pixel per decidere quanto deve scendere */
+}
+
+.slots-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Allinea i numeri alla sommità */
+    gap: 15px;
+    width: 100%;
+    padding: 0 10px;
+    flex-wrap: nowrap; /* Fondamentale: restano su una riga */
+}
+
+.slot {
+    /* Rendiamo le caselle rettangolari e grandi */
+    flex: 1; 
+    max-width: 180px; /* Larghezza massima per ogni casella */
+    height: 120px;    /* Altezza generosa per il rettangolo */
+    
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Font molto grande per il numero */
+    font-size: clamp(2rem, 5vw, 4rem); 
+    font-weight: 900;
+    
+    cursor: pointer;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.slot:hover {
+    transform: translateY(-10px) scale(1.05);
+    background-color: #fff;
+    box-shadow: 0 15px 30px rgba(0, 212, 255, 0.4);
+}
+
+.title-box {
+    background: rgba(255, 255, 255, 0.95); /* Bianco leggermente trasparente per un look moderno */
+    color: black;
+    
+    /* ESPANSIONE: Occupa quasi tutta la larghezza del riquadro */
+    width: 85%; 
+    
+    /* ALTEZZA: Molto più generosa */
+    padding: 15px 30px; 
+    
+    /* TESTO: Molto grande e centrato */
+    font-weight: 900;
+    font-size: clamp(1.5rem, 4vw, 2.5rem); /* Si adatta alla grandezza dello schermo */
+    text-align: center;
+    
+    display: block; /* Permette alla larghezza (width) di funzionare correttamente */
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    text-transform: uppercase;
+    
+    /* POSIZIONAMENTO: Margine dal basso per non toccare il bordo */
+    margin-bottom: 10px; 
+    
+    /* Per sicurezza contro testi troppo lunghi */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* --- FIX DEL MODAL (IL POP-UP) --- */
+.modal {
+    display: none; /* Nasconde il pop-up di default */
+    position: fixed; /* Lo tiene fermo sullo schermo */
+    z-index: 9999; /* Lo mette sopra a TUTTO */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); /* Sfondo oscurato */
+    backdrop-filter: blur(5px); /* Effetto sfocatura dietro il pop-up */
+}
+
+.modal-content {
+    background-color: #1a1a1a; /* Nero più profondo */
+    margin: 5% auto;           /* Più in alto verso il centro */
+    padding: 50px;             /* Molto più spazio interno */
+    
+    /* GRANDEZZA: Lo portiamo all'80% della larghezza e alziamo il limite */
+    width: 80%; 
+    max-width: 900px; 
+    
+    border-radius: 30px;        /* Bordi più arrotondati */
+    border: 4px solid #00d4ff;  /* Bordo neon più spesso */
+    
+    text-align: center;
+    
+    /* Ombra massiccia per farlo staccare dal fondo */
+    box-shadow: 0 0 100px rgba(0, 212, 255, 0.4), 0 0 20px rgba(0, 0, 0, 1);
+    
+    animation: zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-content h3 {
+    font-size: 3rem;           /* Titolo enorme */
+    color: #fff;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+#answer-box p {
+    font-size: 2.5rem;         /* Testo della risposta gigante */
+    color: #ffcc00;            /* Giallo per la risposta */
+    margin-top: 20px;
+}
+
+/* Ingrandiamo i bottoni dentro il pop-up */
+.modal-buttons button {
+    padding: 20px 40px;
+    font-size: 1.5rem;
+    border-radius: 15px;
+    min-width: 200px;
+}
+
+/* Ingrandiamo la barra dell'audio */
+audio {
+    height: 80px;
+    margin: 40px 0;
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.hidden { display: none; }
+
+.modal-buttons {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+#btn-show { background-color: #00d4ff; color: #000; }
+#btn-close { background-color: #ff4b2b; color: #fff; }
+
+button:hover { opacity: 0.8; transform: translateY(-2px); }
+
+audio {
+    width: 100%;
+    margin: 20px 0;
+}
+
+@media (max-width: 1200px) {
+    .slot {
+        height: 100px;
+    }
+    .category-block {
+        min-height: 450px;
+    }
+}
+
+@media (max-width: 949px) {
+    .grid-container {
+        grid-template-columns: 1fr; /* Una colonna su mobile */
+    }
+    .slot {
+        height: 80px; /* Più basse su mobile */
+    }
+}
+
+.special-disco .slot {
+    background: linear-gradient(
+        145deg, 
+        rgba(255, 0, 255, 0.7), /* Magenta fluo al 70% */
+        rgba(112, 0, 255, 0.7)  /* Viola profondo al 70% */
+    );
+    color: white; /* Numero bianco per contrasto */
+    border: 3px solid #00ffff; /* Bordo azzurro neon */
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.6); /* Bagliore rosa */
+}
+
+/* Effetto hover solo per le caselle Disco */
+.special-disco .slot:hover {
+    background: #00ffff;
+    color: #000;
+    box-shadow: 0 0 30px #00ffff;
+}
+
+/* Cambia il titolo in basso */
+.special-disco .title-box {
+    background: rgba(0, 0, 0, 0.8); /* Fondo nero semitrasparente */
+    color: rgba(255, 0, 255, 0.7); /* Testo color ciano neon */
+    border: 2px solid #ff00ff; /* Bordo magenta neon */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Effetto incisione */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+    letter-spacing: 1px;
+    font-weight: 800;
+}
+
+.special-anni90 .slot {
+    /* Fondo: Nero fumo molto denso (85%), stile garage buio */
+    background: linear-gradient(
+        145deg, 
+        rgba(10, 10, 10, 0.85), 
+        rgba(30, 30, 35, 0.85)
+    );
+    
+    /* Numeri: Giallo acido fluo (il colore dello smile dei Nirvana) */
+    color: #e6e000; 
+    
+    /* Bordo: Rosso sgranato/mattone semitrasparente */
+    border: 3px solid rgba(139, 0, 0, 0.6); 
+    
+    /* Ombra netta e profonda, stile rock underground */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8); 
+    
+    /* Effetto satinato sullo sfondo */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Effetto hover: Esplosione di Giallo Acido (Look Smells Like Teen Spirit) */
+.special-anni90 .slot:hover {
+    /* Diventa Giallo fluo quasi solido, luminoso come i riflettori sul palco */
+    background: rgba(230, 224, 0, 0.95); 
+    color: #000000; /* Numero nero per massimo contrasto */
+    
+    /* Un bagliore giallo sporco e intenso */
+    box-shadow: 0 0 30px rgba(230, 224, 0, 0.6); 
+    
+    /* Il bordo si accende di giallo */
+    border-color: #e6e000; 
+}
+
+/* Title Box Anni 90 (Stile Targa Metallica Usurata) */
+.special-anni90 .title-box {
+    /* Fondo: Nero profondo e opaco */
+    background: rgba(0, 0, 0, 0.9); 
+    
+    /* Testo: Giallo acido fluo "inciso" */
+    color: #e6e000; 
+    
+    /* Bordo: Grigio metallo corroso */
+    border-left: 5px solid #e6e000;
+    border-right: 5px solid #e6e000;
+    
+    /* Bordo: Sottilissimo, quasi invisibile */
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    
+    /* Effetto luce "sporco" sul testo giallo */
+    text-shadow: 0 0 10px rgba(230, 224, 0, 0.5); 
+    
+    /* Ombra massiccia e industriale */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.9); 
+    
+    letter-spacing: 3px; /* Molto distanziato per un look aggressivo */
+    font-weight: 900; 
+    text-transform: uppercase;
+}
+
+.special-2000 .slot {
+    background: linear-gradient(
+        145deg, 
+        rgba(100, 100, 110, 0.2), /* Grigio metallo scuro */
+        rgba(60, 60, 70, 0.2)     /* Grigio asfalto/garage */
+    );
+    color: #e0e0e0; /* Bianco sporco, meno brillante */
+    border: 3px solid rgba(180, 180, 190, 0.5); /* Bordo stile alluminio satinato */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6); /* Ombra netta, niente bagliori neon */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Effetto hover più "meccanico" */
+.special-2000 .slot:hover {
+    background: rgba(140, 140, 150, 0.95); /* Grigio più chiaro al passaggio */
+    color: #ffffff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    border-color: #ffffff;
+}
+
+/* Title Box Anni 2000 (Stile targa industriale) */
+.special-2000 .title-box {
+    background: rgba(40, 40, 45, 0.9); /* Quasi nero opaco */
+    color: #adb5bd; /* Grigio argento spento */
+    border-left: 5px solid #ffffff;
+    border-right: 5px solid #ffffff;
+    
+    /* Bordo: Sottilissimo, quasi invisibile */
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Effetto incisione */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+    letter-spacing: 1px;
+    font-weight: 800;
+}
+
+.special-2010 .slot {
+    /* Fondo: Blu elettrico molto profondo e pulito (85%) */
+    background: linear-gradient(
+        145deg, 
+        rgba(0, 114, 255, 0.85), /* Electric Blue */
+        rgba(0, 198, 255, 0.85)  /* Cyan luminoso */
+    );
+    
+    /* Numeri: Bianco puro e nitido */
+    color: #ffffff; 
+    
+    /* Bordo: Sottile e luminoso, stile smartphone */
+    border: 1px solid rgba(255, 255, 255, 0.4); 
+    
+    /* Ombra: Morbida e diffusa, tipica del Material Design */
+    box-shadow: 0 10px 25px rgba(0, 114, 255, 0.3); 
+    
+    /* Blur molto pulito, effetto vetro di iOS 7+ */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Effetto hover: Ultra luminoso (Pop Culture) */
+.special-2010 .slot:hover {
+    /* Passa a un rosa magenta acceso (stile Instagram originale/TikTok) */
+    background: rgba(255, 0, 150, 0.95); 
+    color: #ffffff;
+    
+    /* Bagliore rosa moderno */
+    box-shadow: 0 0 35px rgba(255, 0, 150, 0.5); 
+    border-color: #ffffff;
+    transform: translateY(-5px) scale(1.03);
+}
+
+/* Title Box Anni 2010 (Stile barra delle notifiche scura) */
+.special-2010 .title-box {
+    /* Fondo: Grigio antracite quasi nero, molto liscio */
+    background: rgba(25, 25, 25, 0.9); 
+    
+    /* Testo: Bianco con un leggero bagliore azzurro */
+    color: #00d4ff; 
+
+    border-left: 5px solid #ffffff;
+    border-right: 5px solid #ffffff;
+    
+    /* Bordo: Sottilissimo, quasi invisibile */
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    
+    /* Ombra pulita e piatta */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); 
+    
+    letter-spacing: 1px;
+    font-weight: 800; /* Leggermente meno "pesante" degli anni '90, più elegante */
+    text-transform: uppercase;
+}
+
+.special-2020 .slot {
+    /* Fondo: Nero antracite profondo con un tocco di viola (85%) */
+    background: linear-gradient(
+        145deg, 
+        rgba(15, 15, 20, 0.85), 
+        rgba(30, 30, 45, 0.85)
+    );
+    
+    /* Numeri: Verde acido Cyber (molto in voga nei primi anni '20) */
+    color: #ccff00; 
+    
+    /* Bordo: Sottilissimo e scuro */
+    border: 1px solid rgba(204, 255, 0, 0.3); 
+    
+    /* Ombra: Effetto "Glow" soffuso verde acido */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 
+                0 0 15px rgba(204, 255, 0, 0.1); 
+    
+    /* Blur moderno e cristallino */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Effetto hover: Focus Neon (Stile interfaccia gaming/social moderno) */
+.special-2020 .slot:hover {
+    /* Diventa un verde acido solido e vibrante */
+    background: rgba(204, 255, 0, 0.95); 
+    color: #000000;
+    
+    /* Bagliore neon intenso */
+    box-shadow: 0 0 40px rgba(204, 255, 0, 0.6); 
+    border-color: #ffffff;
+    transform: scale(1.05);
+}
+
+/* Title Box 2020 (Minimalismo estremo) */
+.special-2020 .title-box {
+    /* Fondo: Nero assoluto "OLED" */
+    background: rgba(5, 5, 5, 0.95); 
+    
+    /* Testo: Bianco nitido con spaziatura moderna */
+    color: #ffffff; 
+    
+    /* Bordo laterale colorato per un tocco di stile TikTok/Reels */
+    border-left: 5px solid #ccff00;
+    border-right: 5px solid #ccff00;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    
+    letter-spacing: 5px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.special-sanremo .slot {
+    background: linear-gradient(
+        145deg, 
+        rgba(50, 20, 100, 0.85), /* Blu notte profondo */
+        rgba(150, 30, 120, 0.85)  /* Porpora/Fuxia floreale */
+    );
+    color: #f1c40f; /* Oro per i numeri */
+    border: 3px solid rgba(241, 196, 15, 0.6); /* Bordo oro semitrasparente */
+    box-shadow: 0 0 20px rgba(150, 30, 120, 0.5); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-family: "Playfair Display", serif; /* Se hai un font elegante, usalo qui */
+}
+
+/* Effetto hover Sanremo (Luminoso come i riflettori) */
+.special-sanremo .slot:hover {
+    background: rgba(241, 196, 15, 0.9); /* Diventa oro quasi solido */
+    color: #1a1a1a;
+    box-shadow: 0 0 30px #f1c40f;
+    border-color: #ffffff;
+}
+
+/* Title Box Sanremo (Elegante e scura) */
+.special-sanremo .title-box {
+    background: rgba(10, 10, 30, 0.9); /* Fondo quasi nero notte */
+    color: #f1c40f; /* Scritta oro */
+    border: 2px solid #f1c40f;
+    text-shadow: 0 0 8px rgba(241, 196, 15, 0.6);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.8);
+    letter-spacing: 4px; /* Molto distanziato per un look Premium */
+    font-weight: 700;
+}
+
+.category-block.special-2020 {
+    grid-column: 1 / span 2; /* Occupa lo spazio di 2 colonne */
+    justify-self: center;    /* Si centra orizzontalmente rispetto alla griglia */
+    width: 48%;              /* Mantiene la stessa larghezza degli altri box sopra */
+    max-width: 1400px;        /* Opzionale: evita che diventi troppo enorme */
+}

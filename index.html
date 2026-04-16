@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Quiz Game</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div style="background: #1a1a1a; border: 0.3vw solid #ffcc00; border-radius: 1vw; padding: 1.5vw; flex-grow: 1; font-family: sans-serif; box-shadow: 0 0 20px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; margin-right: 2vw;">
+        <div style="color: #ffcc00; font-size: clamp(22px, 2.2vw, 45px); font-weight: bold; text-align: center; margin-bottom: 2vh; border-bottom: 0.2vw solid #ffcc00; text-transform: uppercase; padding-bottom: 1vh;">
+            CLASSIFICA
+        </div>
+        
+        <table style="width: 100%; color: white; border-collapse: collapse; table-layout: fixed;">
+            <thead>
+                <tr style="font-size: clamp(20px, 1.8vw, 32px); border-bottom: 3px solid #444; color: #bbb; text-transform: uppercase; letter-spacing: 1px;">
+                    <th style="text-align: left; padding: 1.5vh 1vh; width: 35%;">NOME</th>
+                    <th style="text-align: center; width: 15%;">PUNTI</th>
+                    <th style="text-align: center; width: 15%;">VALORE</th>
+                    <th style="text-align: right; padding-right: 1.5vw; width: 23%;">AZIONE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <script>
+                    for(let i=1; i<=7; i++) {
+                        document.write(`
+                            <tr style="border-bottom: 1px solid #333;">
+                                <td style="padding: 1.2vh 0.5vw;">
+                                    <input type="text" id="nomeS${i}" oninput="salvaNomi()" placeholder="Nome..." style="width: 95%; background: #222; color: white; border: 1px solid #444; padding: 0.8vh; font-weight: 900; border-radius: 0.3vw; font-size: clamp(18px, 1.6vw, 36px);">
+                                </td>
+                                <td id="puntiS${i}" style="text-align: center; font-weight: bold; color: #ffcc00; font-size: clamp(30px, 3.2vw, 65px); line-height: 1.2;">0</td>
+                                <td style="text-align: center;">
+                                    <input type="number" id="valS${i}" value="100" style="width: 70%; max-width: 100px; font-size: clamp(16px, 1.2vw, 26px); text-align: center; padding: 0.5vh; border-radius: 0.3vw; border: 1px solid #444; background: white; color: black;">
+                                </td>
+                                <td style="text-align: right; padding: 1vh 1vw 1vh 0;">
+                                    <button onclick="modificaPuntiSpettatore(${i})" style="background: #28a745; color: white; border: none; padding: 1vh 0; cursor: pointer; font-weight: bold; font-size: clamp(14px, 1.1vw, 22px); border-radius: 0.5vw; width: 100%; max-width: 160px; transition: 0.2s;">
+                                        AGGIUNGI
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    }
+                </script>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="grid-container" id="game-board">
+        </div>
+
+    <div id="modal" class="modal">
+    <div class="modal-content">
+        <h3>Ascolta la traccia</h3>
+        <audio id="audio-player" controls></audio>
+        
+        <div id="answer-box" class="hidden">
+            <img id="artist-image-pop" src="" alt="Artista" style="width: 100%; max-width: 400px; border-radius: 20px; margin-bottom: 20px; border: 4px solid #00d4ff;">
+            
+            <p style="font-size: 2rem;">L'artista è: <strong id="artist-name">---</strong></p>
+        </div>
+        
+        <div class="modal-buttons">
+            <button id="btn-show" onclick="showAnswer()">Mostra Risposta</button>
+            <button id="btn-close" onclick="closeModal()">Chiudi</button>
+        </div>
+    </div>
+</div>
+
+    <script> 
+        // CONFIGURAZIONE DATI
+const categories = [
+    {
+        title: "DISCO DANCE 70/80",
+        bg: "immagini/disco.png", // Sfondo del riquadro
+        songs: [
+            { id: 1, audio: "link_audio_1.mp3", artist: "Michael Jackson", img: "https://via.placeholder.com/60/000000/ffffff?text=MJ" },
+            { id: 2, audio: "audio2.mp3", artist: "Madonna", img: "img_madonna.jpg" },
+            { id: 3, audio: "audio3.mp3", artist: "Queen", img: "img_queen.jpg" },
+            { id: 4, audio: "audio4.mp3", artist: "Adele", img: "img_adele.jpg" },
+            { id: 5, audio: "audio5.mp3", artist: "Ed Sheeran", img: "img_ed.jpg" },
+        ]
+    },
+    {
+        title: "ANNI 90",
+        bg: "immagini/anni90.png",
+        songs: [
+            { id: 1, audio: "rock1.mp3", artist: "AC/DC", img: "img_acdc.jpg" },
+            { id: 2, audio: "rock2.mp3", artist: "Led Zeppelin", img: "img_led.jpg" },
+            { id: 3, audio: "rock3.mp3", artist: "Pink Floyd", img: "img_pink.jpg" },
+            { id: 4, audio: "rock4.mp3", artist: "Deep Purple", img: "img_deep.jpg" },
+            { id: 5, audio: "rock5.mp3", artist: "Nirvana", img: "img_nirvana.jpg" },
+        ]
+    },
+{
+        title: "ANNI 2010",
+        bg: "immagini/2010.png",
+        songs: [
+            { id: 1, audio: "due1.mp3", artist: "Avril Lavigne - Complicated ", img: "immagini/avril.jpg" },
+            { id: 2, audio: "rock2.mp3", artist: "Led Zeppelin", img: "img_led.jpg" },
+            { id: 3, audio: "rock3.mp3", artist: "Pink Floyd", img: "img_pink.jpg" },
+            { id: 4, audio: "rock4.mp3", artist: "Deep Purple", img: "img_deep.jpg" },
+            { id: 5, audio: "rock5.mp3", artist: "Nirvana", img: "img_nirvana.jpg" },
+        ]
+    },
+    {
+        title: "ANNI 2000",
+        bg: "immagini/2000.png",
+        songs: [
+            { id: 1, audio: "audio/due1.mp3", artist: "Avril Lavigne - Complicated ", img: "immagini/avril.jpg" },
+            { id: 2, audio: "rock2.mp3", artist: "Led Zeppelin", img: "img_led.jpg" },
+            { id: 3, audio: "rock3.mp3", artist: "Pink Floyd", img: "img_pink.jpg" },
+            { id: 4, audio: "rock4.mp3", artist: "Deep Purple", img: "img_deep.jpg" },
+            { id: 5, audio: "rock5.mp3", artist: "Nirvana", img: "img_nirvana.jpg" },
+        ]
+    },
+
+    {
+        title: "ANNI 2020",
+        bg: "immagini/anni2020.png",
+        songs: [
+            { id: 1, audio: "rock1.mp3", artist: "AC/DC", img: "img_acdc.jpg" },
+            { id: 2, audio: "rock2.mp3", artist: "Led Zeppelin", img: "img_led.jpg" },
+            { id: 3, audio: "rock3.mp3", artist: "Pink Floyd", img: "img_pink.jpg" },
+            { id: 4, audio: "rock4.mp3", artist: "Deep Purple", img: "img_deep.jpg" },
+            { id: 5, audio: "rock5.mp3", artist: "Nirvana", img: "img_nirvana.jpg" },
+        ]
+    },
+    // Aggiungi qui altre categorie seguendo lo schema...
+];
+
+let currentSlotElement = null;
+let currentSongData = null;
+
+const board = document.getElementById('game-board');
+const modal = document.getElementById('modal');
+const audioPlayer = document.getElementById('audio-player');
+const artistNameLabel = document.getElementById('artist-name');
+const answerBox = document.getElementById('answer-box');
+
+// Genera la griglia
+categories.forEach(cat => {
+    const block = document.createElement('div');
+    block.className = 'category-block';
+    block.style.backgroundImage = `url('${cat.bg}')`;
+
+    // AGGIUNTA: Se il titolo è DISCO DANCE, aggiungi la classe speciale
+    if (cat.title === "DISCO DANCE 70/80") {
+        block.classList.add('special-disco');
+    }
+    if (cat.title === "ANNI 2000") {
+        block.classList.add('special-2000');
+    }
+    if (cat.title === "ANNI 90") {
+        block.classList.add('special-anni90');
+    }
+    if (cat.title === "ANNI 2010") {
+        block.classList.add('special-2010');
+    }
+    if (cat.title === "ANNI 2020") {
+        block.classList.add('special-2020');
+    }
+
+    const slotsCont = document.createElement('div');
+    slotsCont.className = 'slots-container';
+
+    cat.songs.forEach(song => {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        slot.innerText = song.id;
+        slot.onclick = () => openModal(slot, song);
+        slotsCont.appendChild(slot);
+    });
+
+    const title = document.createElement('div');
+    title.className = 'title-box';
+    title.innerText = cat.title;
+
+    block.appendChild(slotsCont);
+    block.appendChild(title);
+    board.appendChild(block);
+});
+
+function openModal(element, song) {
+    currentSlotElement = element;
+    currentSongData = song;
+    
+    audioPlayer.src = song.audio;
+    artistNameLabel.innerText = song.artist;
+    
+    answerBox.classList.add('hidden');
+    modal.style.display = 'block';
+    audioPlayer.play();
+}
+
+function showAnswer() {
+    answerBox.classList.remove('hidden');
+    // Cambia il numero con l'immagine dell'artista
+    currentSlotElement.innerText = "";
+    // 1. Recuperiamo l'elemento immagine nel pop-up
+    const popImg = document.getElementById('artist-image-pop');
+    
+    // 2. Impostiamo la sorgente dell'immagine con i dati della canzone corrente
+    popImg.src = currentSongData.img;
+    
+    // 3. Mostriamo il box della risposta nel pop-up
+    answerBox.classList.remove('hidden');
+}
+
+function closeModal() {
+    modal.style.display = 'none';
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0;
+}
+    </script>
+</body>
+</html>
