@@ -69,6 +69,32 @@
     </div>
 </div>
 
+<div class="fase-banner">
+    <h2>FINALE : Continua la canzone</h2>
+</div>
+
+<div class="fase-container">
+    <div class="categoria-box">
+        <div class="categoria-titolo">SANREMO</div>
+        <div class="canzoni-grid">
+            <div class="canzone-card" onclick="playSpecial(1, 45, 75.25, this)" style="background-image: url('immagini/sanremo1.PNG'); background-position: center 100%;"><span>ANNI 90</span></div>
+            <div class="canzone-card" onclick="playSpecial(2, 50, 72.75, this)" style="background-image: url('immagini/sanremo2.PNG');">
+    <span>ANNI 2000</span>
+</div>
+            <div class="canzone-card" onclick="playSpecial(3, 32, 44.75, this)" style="background-image: url('immagini/sanremo3.PNG');"><span>ANNI 2010</span></div>
+        </div>
+    </div>
+
+    <div class="categoria-box">
+        <div class="categoria-titolo">CARTONI ANIMATI</div>
+        <div class="canzoni-grid">
+            <div class="canzone-card" onclick="playSpecial(4, 5, 27, this)" style="background-image: url('immagini/cartoni1.PNG');"><span>PRE 2000</span></div>
+            <div class="canzone-card" onclick="playSpecial(5, 54.50, 67, this)" style="background-image: url('immagini/cartoni2.PNG'); background-position: center 60%"><span>POST 2000</span></div>
+            <div class="canzone-card" onclick="playSpecial(6, 48, 78.70, this)" style="background-image: url('immagini/cartoni3.PNG');"><span>DISNEY</span></div>
+        </div>
+    </div>
+</div>
+
     <script> 
         // CONFIGURAZIONE DATI
 const categories = [
@@ -125,7 +151,7 @@ const categories = [
             { id: 2, audio: "audio/Nuova2.mp3", artist: "Harry Styles - As it Was", img: "immagini/harry.jpg" },
             { id: 3, audio: "audio/Nuova3.mp3", artist: "Alfa - Il Filo Rosso", img: "immagini/alfa.jpg" },
             { id: 4, audio: "audio/Nuova4.mp3", artist: "Dualipa - Levitating", img: "immagini/dua.jpg" },
-            { id: 5, audio: "audio/Nuova5.mp3", artist: "Annalisa - Esibizionista", img: "immagini/lisa.jpg" },
+            { id: 5, audio: "audio/Nuova5.mp3", artist: "Pinguini Tattici Nucleari - Giovani Wannabe", img: "immagini/pinguini.jpg" },
         ]
     },
     // Aggiungi qui altre categorie seguendo lo schema...
@@ -213,6 +239,91 @@ function closeModal() {
     modal.style.display = 'none';
     audioPlayer.pause();
     audioPlayer.currentTime = 0;
+}
+
+// 1. Carica punti E nomi salvati (o array vuoti se è la prima volta)
+let puntiSpettatori = JSON.parse(localStorage.getItem('puntiS')) || [0, 0, 0, 0, 0, 0, 0];
+let nomiS = JSON.parse(localStorage.getItem('nomiS')) || ["", "", "", "", "", "", ""];
+
+// 2. Carica tutto all'avvio
+window.onload = function() {
+    // Carica dati Spettatori
+    for(let i=1; i<=7; i++) {
+        if(document.getElementById('puntiS' + i)) document.getElementById('puntiS' + i).innerText = puntiSpettatori[i-1];
+        if(document.getElementById('nomeS' + i)) document.getElementById('nomeS' + i).value = nomiS[i-1];
+    }
+};
+
+// 3. Funzione per salvare i nomi (chiamata ogni volta che scrivi)
+function salvaNomi() {
+    for(let i=1; i<=7; i++) {
+        nomiS[i-1] = document.getElementById('nomeS' + i).value;
+    }
+    localStorage.setItem('nomiS', JSON.stringify(nomiS));
+}
+
+// 4. Funzioni punti (rimangono quasi uguali)
+function modificaPuntiSpettatore(num) {
+    let valore = parseInt(document.getElementById('valS' + num).value) || 0;
+    puntiSpettatori[num-1] += valore;
+    document.getElementById('puntiS' + num).innerText = puntiSpettatori[num-1];
+    localStorage.setItem('puntiS', JSON.stringify(puntiSpettatori));
+}
+
+let currentAudio = null;
+let lastSongId = null;
+let clickCount = {};
+
+const listaCanzoni = {
+    1: "audio/Sanremo1.mp3",
+    2: "audio/Sanremo2.mp3",
+    3: "audio/Sanremo3.mp3",
+    4: "audio/Cartoni1.mp3",
+    5: "audio/Cartoni2.mp3",
+    6: "audio/Cartoni3.mp3"
+};
+
+function playSpecial(songId, startTime, firstEndTime, element) {
+    if (!clickCount[songId]) clickCount[songId] = 0;
+
+    if (lastSongId !== songId) {
+        if (currentAudio) currentAudio.pause();
+        currentAudio = new Audio(listaCanzoni[songId]);
+        currentAudio.currentTime = startTime;
+        lastSongId = songId;
+    }
+
+    clickCount[songId]++;
+    currentAudio.volume = 1; // Resetta il volume a palla ogni volta che riparte
+
+    let targetStop;
+    if (clickCount[songId] === 1) {
+        targetStop = firstEndTime;
+    } else {
+        targetStop = currentAudio.currentTime + 15;
+    }
+
+    currentAudio.play();
+    element.classList.add('oscurata');
+
+    // --- LOGICA DI MONITORAGGIO CON DISSOLVENZA ---
+    currentAudio.ontimeupdate = function() {
+        // Inizia a sfumare 2 secondi prima del targetStop
+        let fadeStart = targetStop - 2;
+
+        if (currentAudio.currentTime >= fadeStart && currentAudio.currentTime < targetStop) {
+            // Calcola il volume in base a quanto manca alla fine (da 1 a 0)
+            let gap = targetStop - currentAudio.currentTime;
+            let newVolume = Math.max(0, gap / 2); 
+            currentAudio.volume = newVolume;
+        }
+
+        if (currentAudio.currentTime >= targetStop) {
+            currentAudio.pause();
+            currentAudio.volume = 0;
+            currentAudio.ontimeupdate = null;
+        }
+    };
 }
     </script>
 </body>
